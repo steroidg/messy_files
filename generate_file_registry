@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PROG_NAME=`basename $0`;
+HASH_PROG=md5sum;
 
 if [ $# -ne 2 ]; then
     echo "ERROR: Incorrect number of arguments";
@@ -15,6 +16,6 @@ REGISTRY_FILE=$2;
 
 IFS=$'\n';
 for i in `find ${DIR_NAME}`; do
-    [ -f "${i}" ] && md5sum "${i}" >> ${REGISTRY_FILE};
+    [ -f "${i}" ] && $HASH_PROG "${i}" >> ${REGISTRY_FILE};
 done
 unset IFS;
