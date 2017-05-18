@@ -1,24 +1,67 @@
 #!/bin/bash
 
+generate_html_header () {
+  local readonly FILE_NAME=$1;
+  local readonly TITLE=$2;
+
+  if [ -z "${FILE_NAME}" -o -z "${TITLE}" ]; then
+    echo "ERROR: Invalid number of arguments.";
+    return 1;
+  fi
+
+  echo "<html>" > ${FILE_NAME};
+  echo "<head><title>${TITLE}</title></head>" >> ${FILE_NAME};
+  echo "<body>" >> ${FILE_NAME};
+
+  return 0;
+} #generate_index_header
+
+
+generate_html_footer () {
+  local readonly FILE_NAME=$1;
+
+  if [ -z "${FILE_NAME}" ]; then
+    echo "ERROR: Invalid number of arguments.";
+    return 1;
+  fi
+
+  echo "</body>" >> ${FILE_NAME};
+  echo "</html>" >> ${FILE_NAME};
+
+  return 0;
+} #generate_index_header
+
+
+
 readonly PROG_NAME=`basename $0`;
 if [ $# -ne 3 ]; then
     echo "ERROR: Incorrect number of arguments";
-    echo "Usage: ${PROG_NAME} register_file_1 registry_file_2 dup_list";
+    echo "Usage: ${PROG_NAME} register_file_1 registry_file_2 output_dir";
     exit 1;
 fi
 
 readonly REGISTRY_FILE_1=$1;
 readonly REGISTRY_FILE_2=$2;
-readonly DUP_LIST=$3;
-if [ -f ${DUP_LIST} ]; then
-    echo "Duplicate list already exists, do you want to truncate it?";
+readonly OUTPUT_DIR=$3;
+if [ -d ${OUTPUT_DIR} ]; then
+    echo "Output directory already exists, do you want to empty it?";
     read ANSWER;
     if [ "${ANSWER}" == "y" -o "${ANSWER}" == "Y" ]; then
-        truncate -s 0 ${DUP_LIST};
+        rm -r ${OUTPUT_DIR};
     else
         exit 0;
     fi
 fi
+
+mkdir ${OUTPUT_DIR};
+readonly INDEX_FILE="${OUTPUT_DIR}/index.html";
+
+generate_html_header $INDEX_FILE 'full_index';
+
+generate_html_footer $INDEX_FILE 'full_index';
+
+exit 0;
+
 
 SAME_REGISTRY='false';
 N_LINES=0;
