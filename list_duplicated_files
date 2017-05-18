@@ -72,7 +72,7 @@ for i in `cat ${REGISTRY_FILE_1}`; do
   MD5=`echo $i | awk '{print $1}'`;
   HTML_ENTRY_EXISTS=`cat ${INDEX_FILE} | grep ${MD5}`;
   if [ -z ${HTML_ENTRY_EXISTS} ]; then
-    DUP_LINE=`cat ${REGISTRY_FILE_2} | grep ^${MD5} | sed -e "s/\n/foo/g"`
+    DUP_LINE=`cat ${REGISTRY_FILE_2} | grep ^${MD5}`
     DUP_FOUND=`echo "${DUP_LINE}" | wc -l`;
     if [ ${DUP_FOUND} -gt ${N_LINES} ]; then
       DUPE_HTML_FILE=${OUTPUT_DIR}/${MD5}.html;
@@ -81,7 +81,7 @@ for i in `cat ${REGISTRY_FILE_1}`; do
         echo "${i}" > ${DUPE_HTML_FILE};
       fi
       for j in ${DUP_LINE}; do
-        FILE_LINK=`echo ${j} | awk '{$1=""; print $0}'`
+        FILE_LINK=`echo ${j} | sed -e 's/^\w*\ *//'`
         echo "<br><a href='${FILE_LINK}'>${FILE_LINK}</a></br>" >> ${DUPE_HTML_FILE};
       done
       generate_html_footer ${DUPE_HTML_FILE} ${MD5};
