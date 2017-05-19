@@ -1,0 +1,9 @@
+#!/bin/bash
+read POST_STRING
+echo -e "Content-type: text/plain\n\n";
+
+FN=`echo ${POST_STRING} | sed -e s/^file_name=//`;
+TFN=`python -c "import sys, urllib as ul; print ul.unquote_plus(\"${FN}\")"`
+if [ -f "../${TFN}" ]; then
+  echo -e "[${TFN}] is a file" >> /tmp/foo;
+fi
